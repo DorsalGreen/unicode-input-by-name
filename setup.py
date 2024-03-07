@@ -51,4 +51,5 @@ setup(name=meta.APPNAME_SHORT,
                  }],
       scripts = ['uibn.pyw'],
       data_files = [('', data_files)],
+      py_modules=[''],
       )
