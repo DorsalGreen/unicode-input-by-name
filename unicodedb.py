@@ -1,7 +1,7 @@
 import unicodedata as ud
 import sqlite3
 import meta
-from path import path as Path
+from pathlib import Path
 import wx
 
 HARD_LIMIT = -1
@@ -34,8 +34,8 @@ class UnicodeDatabase(object):
         if count != 0:
             return
         
-        for i in xrange(0, 0xFFFF):
-            u = unichr(i)
+        for i in range(0, 0xFFFF):
+            u = chr(i)
             try:
                 name = ud.name(u)
                 conn.execute('insert into udata values (?, ?, ?)',
@@ -67,11 +67,8 @@ class UnicodeDatabase(object):
 
 if __name__ == '__main__':
     udb = UnicodeDatabase()
-    print udb.get_count('infinity')
+    print(udb.get_count('infinity'))
     for row in udb.get_chars('infinity', 0, 10):
-        print row
-    print udb.get_count('i')
+        print(row)
+    print(udb.get_count('i'))
     udb.increment_frequency(row)
-
-
-
