@@ -186,3 +186,14 @@ upsilon256 = PyEmbeddedImage(
     "wnHLj/+liPyHiNyU1NL/yPLzSYWgAKw54+W24yLygog0xqkpIuGCPz0UkTsiciAit8dpPwiC"
     "oau8EkIIIYQQQgghhBBCCCGEEEIIIYQQQgghhBCb/D/2s7X5cDmzggAAAABJRU5ErkJggg==")
 
+## code to export the files back to .ICO files
+#import wx
+#app = wx.App()
+#wximg16 = wx.Image(upsilon16.getImage())
+#wximg16.SaveFile("upsilon16.ico", wx.BITMAP_TYPE_ICO)
+#wximg32 = wx.Image(upsilon32.getImage())
+#wximg32.SaveFile("upsilon32.ico", wx.BITMAP_TYPE_ICO)
+#wximg48 = wx.Image(upsilon48.getImage())
+#wximg48.SaveFile("upsilon48.ico", wx.BITMAP_TYPE_ICO)
+#wximg256 = wx.Image(upsilon256.getImage())
+#wximg256.SaveFile("upsilon256.ico", wx.BITMAP_TYPE_ICO)
