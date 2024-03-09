@@ -40,6 +40,7 @@ jobs:
         
   artifacts:
     runs-on: windows-latest
+    needs: build
 
     steps:        
     - name: Archive production artifacts
