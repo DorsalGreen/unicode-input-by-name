@@ -27,8 +27,10 @@ except ImportError:
 
 
 exclude_packages = ["Tkconstants", "Tkinter", "tcl", 'pydoc', '_ssl']
-data_files = ['LICENSE.txt', 'README.txt', 'msvcp90.dll',
-              'Microsoft.VC90.CRT.manifest']
+data_files = ['LICENSE.txt', 'README.txt', 
+              # 'msvcp90.dll',   # can't include these on GitHub
+              # 'Microsoft.VC90.CRT.manifest'  # can't include these on GitHub
+              ]
 
 if 'install' in sys.argv:
     raise RuntimeError('Install not yet supported, please just run uibn.pyw')
