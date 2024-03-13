@@ -6,6 +6,9 @@ import wx
 
 HARD_LIMIT = -1
 
+#define the highest unicode symbol to include in database
+MAX_UNICODE_CODE = 0x1FBFF
+
 class UnicodeDatabase(object):
     
     def __init__(self):
@@ -31,14 +34,27 @@ class UnicodeDatabase(object):
         sql_query = "SELECT count(id) FROM udata"
         count = conn.execute(sql_query).fetchone()[0]
         
-        if count != 0:
-            return
-        
-        for i in range(0, 0xFFFF):
+        #count the number of valid code points. This method is inefficient, but works for now.
+        numValidCodePoint = 0
+        for i in range(0, MAX_UNICODE_CODE):
             u = chr(i)
             try:
                 name = ud.name(u)
-                conn.execute('insert into udata values (?, ?, ?)',
+                numValidCodePoint = numValidCodePoint + 1
+            except ValueError:
+                pass
+        
+        if count >= numValidCodePoint: 
+            # If the numbers match, we don't need to update the db.
+            # If the number of entries in the db is larger, we might have a db from a future version.
+            #   We don't want to loose the frequency entries, so we don't want to re-create the db automatically.
+            return
+        
+        for i in range(0, MAX_UNICODE_CODE):
+            u = chr(i)
+            try:
+                name = ud.name(u)
+                conn.execute('insert into udata(id, name, freq) values (?, ?, ?) ON CONFLICT (id) DO NOTHING;',
                              (i, name, 0))
             except ValueError:
                 pass
