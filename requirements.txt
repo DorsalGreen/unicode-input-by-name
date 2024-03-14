@@ -1,3 +1,4 @@
-wxPython
+#wxPyhton 4.2.1 has a unicode bug
+wxPython>=4.0,!=4.2.1
 pypiwin32
 py2exe
