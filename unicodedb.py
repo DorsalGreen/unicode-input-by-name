@@ -59,19 +59,39 @@ class UnicodeDatabase(object):
             except ValueError:
                 pass
         conn.commit()
+
+    @staticmethod
+    def build_dynamic_sql_query(query:str):
+        # This buils a dynamic query for sqlite
+        # Please take note, that the table name is not user controlled.
+        # SQL injection is avoided by collecting the parameters and then passing to SQL-API for
+        # proper escaping of user-controlled input
+        
+        #search for all words independly, in any order
+        wordList = query.split()
+        paramList = []         
+        if (len(wordList)==0):
+            wordList.append("")
+        joiner = " AND "
+        colName = "name"
+        dynQuery = joiner.join(["{0} LIKE ?".format(colName) for w in wordList])
+        paramList.extend("%{0}%".format(searchText) for searchText in wordList)
+        return dynQuery, tuple(paramList)
                     
     def get_count(self, query):
-        query = '%' + query + '%'
-        sql_query = "select count(id) from udata where name like ?"
-        count = self.conn.execute(sql_query, (query,)).fetchone()[0]
+        dynQuery,paramList = UnicodeDatabase.build_dynamic_sql_query(query)
+        sql_query = "select count(id) from udata where "+dynQuery
+        count = self.conn.execute(sql_query, paramList).fetchone()[0]
         if HARD_LIMIT > 0:
             return min(count, HARD_LIMIT)
         return count
         
-    def get_chars(self, query, start, count):
-        query = '%' + query + '%'
-        sql_query = "select id, name from udata where name like ? order by freq desc, id asc limit ? offset ?"
-        return self.conn.execute(sql_query, (query, count, start))
+    def get_chars(self, query: str, start, count):
+        dynQuery,paramList = UnicodeDatabase.build_dynamic_sql_query(query)
+
+        sql_query = "select id, name from udata where "+dynQuery+ " order by freq desc, id asc limit ? offset ?"
+        res = self.conn.execute(sql_query, paramList +(count, start,))
+        return res
     
     def increment_frequency(self, char):
         sql_query = "select freq from udata where id = ?"
