@@ -4,6 +4,8 @@
 import wx
 import wx.adv
 import meta
+import configparser
+from pathlib import Path
 
 # begin wxGlade: extracode
 # end wxGlade
@@ -14,6 +16,9 @@ if 'win' in sys.platform:
 
 from worker import WorkerThread
 import images
+
+import defaultSettings
+
 
 
 FORWARD_RATIO = 2
@@ -39,6 +44,23 @@ class MainDialog(wx.Dialog):
         self.copy_btn = wx.Button(self, wx.ID_OK, "Copy")
         self.cancel_btn = wx.Button(self, wx.ID_CANCEL, "Hide")
         self.taskbar_icon = wx.adv.TaskBarIcon()
+        #Read the config file
+        wx.GetApp().SetAppName(meta.APPNAME_SHORT)
+        data_dir = Path(wx.StandardPaths.Get().GetUserDataDir())
+        try:
+            data_dir.mkdir()
+        except:
+            pass
+        configFileName = data_dir / 'uibn_settings.ini'
+        
+        self.config = configparser.ConfigParser(defaults=defaultSettings.defaultSettings)
+        try:
+            self.config.read(configFileName) 
+        except Exception as error: #if we fail, do nothing.
+            print("Could not read the config file:", type(error).__name__, "–", error)
+            pass            
+        if not (self.config.has_section('Appearance')):
+            self.config.add_section('Appearance')
 
         self.__set_properties()
         self.__do_layout()
@@ -66,6 +88,7 @@ class MainDialog(wx.Dialog):
             assert res
             self.Bind(wx.EVT_HOTKEY, self.on_hotkey, id=self.hotkey_id)
         
+        # Start the WorkerThread
         self.cache = {}
         self.char = None
         self.query = None
@@ -77,7 +100,7 @@ class MainDialog(wx.Dialog):
     def __set_properties(self):
         # begin wxGlade: MainDialog.__set_properties
         self.SetTitle(meta.APPNAME)
-        self.char_lbl.SetFont(wx.Font(40, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
+        self.char_lbl.SetFont(wx.Font(wx.FontInfo(pointSize=self.config.getint('Appearance','FONT_SIZE_PT_CURRENT_CHAR'))))
         self.SetMinSize((300, 400))
         # end wxGlade
         self.copy_btn.SetDefault()
@@ -88,6 +111,9 @@ class MainDialog(wx.Dialog):
         bundle.AddIcon(images.upsilon256.Icon)
         self.SetIcons(bundle)
         self.taskbar_icon.SetIcon(images.upsilon16.Icon, meta.APPNAME)
+
+        self.candidate_lst.SetFont(wx.Font(wx.FontInfo(pointSize=self.config.getint('Appearance','FONT_SIZE_CANDIDATE_LIST'))))
+
 
     def __do_layout(self):
         # begin wxGlade: MainDialog.__do_layout
