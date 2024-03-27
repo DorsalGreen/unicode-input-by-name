@@ -27,7 +27,7 @@ except ImportError:
 
 
 exclude_packages = ["Tkconstants", "Tkinter", "tcl", 'pydoc', '_ssl']
-data_files = ['LICENSE.txt', 'README.txt', 
+data_files = ['LICENSE.txt', 'README.md', 
               # 'msvcp90.dll',   # can't include these on GitHub
               # 'Microsoft.VC90.CRT.manifest'  # can't include these on GitHub
               ]
