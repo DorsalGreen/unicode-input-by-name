@@ -7,7 +7,8 @@ Intro
 Unicode-Input-By-Name (UIBN) is a little utility that helps you use Unicode characters that are not easily accessible.
 You can find for the symbols you need by searching for the name of the symbol. Then it copies the desired character to the clipboard, and you can insert it into your text file.
 For example, you want to insert the plus-minus symbol, then you open UIBN, search for "plus minus" and then press enter. Now you can insert this symbol into your text from the clipboard (press Ctrl+V).
-![](https://github.com/DorsalGreen/unicode-input-by-name/blob/main/docs/UIBN-Plus-Minus-Screenshot.png)
+
+![Screenshot of Unicode-Input-By-Name](docs/UIBN-Plus-Minus-Screenshot.png)
 
 Running (Windows)
 ==========================
