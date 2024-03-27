@@ -26,7 +26,8 @@ except ImportError:
     pass
 
 
-exclude_packages = ["Tkconstants", "Tkinter", "tcl", 'pydoc', '_ssl']
+#ssl will cause Tcl to be imported and distributed in the package. 
+exclude_packages = ["Tkconstants", "Tkinter", "tcl", 'pydoc', '_ssl', 'ssl']
 data_files = ['LICENSE.txt', 'README.md', 
               # 'msvcp90.dll',   # can't include these on GitHub
               # 'Microsoft.VC90.CRT.manifest'  # can't include these on GitHub
