@@ -18,7 +18,7 @@ from worker import WorkerThread
 import images
 
 import defaultSettings
-
+from TrayBarWidget import TrayBarWidget
 
 
 FORWARD_RATIO = 2
@@ -78,8 +78,7 @@ class MainDialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.on_cancel_click, self.cancel_btn)
         self.Bind(wx.EVT_CLOSE, self.on_close)
         self.Bind(wx.EVT_ACTIVATE, self.on_activate)
-        self.taskbar_icon.Bind(wx.adv.EVT_TASKBAR_CLICK, self.on_hotkey)
-        self.taskbar_icon.Bind(wx.adv.EVT_TASKBAR_LEFT_UP, self.on_hotkey)
+
         # end wxGlade
         
         if 'win' in sys.platform:
@@ -87,6 +86,9 @@ class MainDialog(wx.Dialog):
             res = self.RegisterHotKey(self.hotkey_id, win32con.MOD_ALT, win32con.VK_ADD)
             assert res
             self.Bind(wx.EVT_HOTKEY, self.on_hotkey, id=self.hotkey_id)
+
+        #Create the object for the task bar
+        self.traybar = TrayBarWidget(self)
         
         # Start the WorkerThread
         self.cache = {}
@@ -110,7 +112,7 @@ class MainDialog(wx.Dialog):
         bundle.AddIcon(images.upsilon48.Icon)
         bundle.AddIcon(images.upsilon256.Icon)
         self.SetIcons(bundle)
-        self.taskbar_icon.SetIcon(images.upsilon16.Icon, meta.APPNAME)
+        #self.taskbar_icon.SetIcon(images.upsilon16.Icon, meta.APPNAME)
 
         self.candidate_lst.SetFont(wx.Font(wx.FontInfo(pointSize=self.config.getint('Appearance','FONT_SIZE_CANDIDATE_LIST'))))
 
@@ -132,10 +134,18 @@ class MainDialog(wx.Dialog):
         # end wxGlade
         
     def on_close(self, event):
-        self.worker.on_program_closed()
-        #self.taskbar_icon.Destroy()
-        self.Destroy()
+        # Just hide the main window.
+        self.Show(False)
+        event.Skip()
 
+    # This function is to fully close the window and the traybar icon
+    def on_exitProgram(self, event):
+        self.worker.on_program_closed()
+        # For now, the program can only be closed from the traybar icon (or task manager)
+        if self.traybar is not None:
+            self.traybar.Destroy() # This will kill the task bar icon, when you close the main window using the "x"
+        self.Destroy() #this will only destroy the main window, not the traybar icon
+        
     def on_text_change(self, event): # wxGlade: MainDialog.<event_handler>
         text = event.GetString()
         self.waiting_query = text
