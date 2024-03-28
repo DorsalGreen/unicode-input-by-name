@@ -43,6 +43,6 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: unicode-input-by-name-UIBN
+        name: Unicode-Input-By-Name-UIBN
         path: |
           bin
